@@ -1,5 +1,6 @@
 package com.example.movietestassesment.models;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,11 +10,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class WebResponse<T> {
+public class SearchMovieRequest {
     
-    private T data;
+    private String title;
 
-    private String errors;
-
-    private PagingResponses paging;
+    @NotNull
+    private Integer page;
+    
+    @NotNull
+    private Integer size;
 }
