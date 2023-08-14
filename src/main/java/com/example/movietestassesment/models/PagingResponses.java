@@ -9,11 +9,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class WebResponse<T> {
+public class PagingResponses {
     
-    private T data;
+    private Integer currentPage;
 
-    private String errors;
+    private Integer totalPage;
 
-    private PagingResponses paging;
+    private Integer size;
 }

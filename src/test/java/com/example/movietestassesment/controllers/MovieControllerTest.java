@@ -186,4 +186,56 @@ public class MovieControllerTest {
             assertEquals("OK", response.getData());
         });
     }
+
+    @Test
+    void searchNotFound() throws Exception {
+        mockMVC.perform(
+            get("/api/movies/search")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpectAll(
+            status().isOk()
+        ).andDo(result -> {
+            WebResponse<List<MovieResponse>> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>(){
+            });
+
+            assertNull(response.getErrors());
+            assertEquals(0, response.getData().size());
+            assertEquals(0, response.getPaging().getTotalPage());
+            assertEquals(0, response.getPaging().getCurrentPage ());
+            assertEquals(10, response.getPaging().getSize());
+        });
+    }
+
+    @Test
+    void searchUsingTitle() throws Exception {
+        for (int i = 0; i < 100; i++) {
+            Movie movie = new Movie();
+            movie.setTitle("test" + i);
+            movie.setDescription("dalah sebuah film horor Indonesia tahun 2022 yang disutradarai dan\rditulis oleh Joko Anwar sebagai sekuel dari film tahun 2017, Pengabdi\rSetan.");
+            movie.setRating((float)7);
+            movie.setImage("");
+            movieRepository.save(movie);
+        }
+
+        mockMVC.perform(
+            get("/api/movies/search")
+                .queryParam("title", "Test")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpectAll(
+            status().isOk()
+        ).andDo(result -> {
+            WebResponse<List<MovieResponse>> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>(){
+            });
+
+            assertNull(response.getErrors());
+            assertEquals(10, response.getData().size());
+            assertEquals(10, response.getPaging().getTotalPage());
+            assertEquals(0, response.getPaging().getCurrentPage ());
+            assertEquals(10, response.getPaging().getSize());
+        });
+    }
+
+
 }
